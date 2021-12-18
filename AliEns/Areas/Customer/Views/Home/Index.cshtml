@@ -39,7 +39,7 @@
         <li class="active btn btn-secondary ml-1 mr-1" data-filter=".AllCategories">Show All</li>
         @foreach (var category in Model.Categories)
         {
-            <li class="ml-1 mr-1" data-filter=".@category.Name.Replace(" ", string.Empty)">@category.Name</li>
+            <li class="ml-1 mr-1 mt-3" data-filter=".@category.Name.Replace(" ", string.Empty)">@category.Name</li>
         }
     </ul>
 
@@ -68,15 +68,15 @@
                                 <div class="col-12 col-md-9">
                                     <div class="row pr-3">
                                         <div class="col-8">
-                                            <label class="text-primary" style="font-size:21px;">
+                                            <label class="text-primary font-si" style="font-size:21px;">
                                                 @item.Name
                                             </label>
                                         </div>
 
                                         <div class="col-4 text-right" style="color:maroon">
-                                            <h4>
+                                            <h5>
                                                 $ @item.Price
-                                            </h4>
+                                            </h5>
                                         </div>
                                     </div>
 

@@ -108,7 +108,7 @@ namespace AliEns.Areas.Customer.Controllers
         }
 
         // GET
-        [Authorize(Roles = SD.ManagerUser + "," + SD.KitchenUser)]
+        [Authorize(Roles = SD.Admin + "," + SD.ManagerUser + "," + SD.KitchenUser)]
         public async Task<IActionResult> ManageOrder()
         {
             List<OrderDetailsViewModel> orderDetailsVMList = new List<OrderDetailsViewModel>();
@@ -129,7 +129,7 @@ namespace AliEns.Areas.Customer.Controllers
             return View(orderDetailsVMList.OrderBy(e => e.Order.PickUpTime).ToList());
         }
 
-        [Authorize(Roles = SD.ManagerUser + ", " + SD.KitchenUser)]
+        [Authorize(Roles = SD.Admin + ", " + SD.ManagerUser + ", " + SD.KitchenUser)]
         public async Task<IActionResult> OrderPrepare(int orderId)
         {
             var orderHeader = await _db.Orders.FindAsync(orderId);
@@ -140,7 +140,7 @@ namespace AliEns.Areas.Customer.Controllers
             return RedirectToAction(nameof(ManageOrder));
         }
 
-        [Authorize(Roles = SD.ManagerUser + ", " + SD.KitchenUser)]
+        [Authorize(Roles = SD.Admin + ", " + SD.ManagerUser + ", " + SD.KitchenUser)]
         public async Task<IActionResult> OrderReady(int orderId)
         {
             var orderHeader = await _db.Orders.FindAsync(orderId);
@@ -151,7 +151,7 @@ namespace AliEns.Areas.Customer.Controllers
             return RedirectToAction(nameof(ManageOrder));
         }
 
-        [Authorize(Roles = SD.ManagerUser + ", " + SD.KitchenUser)]
+        [Authorize(Roles = SD.Admin + ", " + SD.ManagerUser + ", " + SD.KitchenUser)]
         public async Task<IActionResult> OrderCancel(int orderId)
         {
             var orderHeader = await _db.Orders.FindAsync(orderId);
@@ -163,7 +163,7 @@ namespace AliEns.Areas.Customer.Controllers
         }
 
         // GET
-        [Authorize(Roles = SD.ManagerUser + "," + SD.FrontDeskUser)]
+        [Authorize(Roles = SD.Admin + ", " + SD.ManagerUser + "," + SD.FrontDeskUser)]
         public async Task<IActionResult> OrderPickup(int pageNumber = 1, string searchName = null, string searchPhone = null, string searchEmail = null)
         {
             PagingOrderDetailsViewModel PagingOrderDetailsVM = new PagingOrderDetailsViewModel()
@@ -246,7 +246,7 @@ namespace AliEns.Areas.Customer.Controllers
         }
 
         // POST
-        [Authorize(Roles = SD.ManagerUser + "," + SD.FrontDeskUser)]
+        [Authorize(Roles = SD.Admin + ", " + SD.ManagerUser + "," + SD.FrontDeskUser)]
         [HttpPost]
         public async Task<IActionResult> OrderPickup(int orderId)
         {

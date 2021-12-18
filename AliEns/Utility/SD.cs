@@ -9,6 +9,7 @@ namespace AliEns.Utility
     public static class SD
     {
         // Constant Roles Names
+        public const string Admin = "Admin";
         public const string ManagerUser = "Manager";
         public const string KitchenUser = "Kitchen";
         public const string FrontDeskUser = "Front Desk";

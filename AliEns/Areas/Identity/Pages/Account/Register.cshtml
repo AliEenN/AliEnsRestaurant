@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        @if (User.IsInRole(SD.ManagerUser))
+        @if (User.IsInRole(SD.Admin) || User.IsInRole(SD.ManagerUser))
         {
             <div class="row form-group">
                 <div class="col-12 col-lg-3">
@@ -115,9 +115,12 @@
                     <label class="form-check-label">
                         <input type="radio" value="@SD.FrontDeskUser" name="rdUserRole" />@SD.FrontDeskUser
                     </label>
-                    <label class="form-check-label">
-                        <input type="radio" value="@SD.ManagerUser" name="rdUserRole" />@SD.ManagerUser
-                    </label>
+                    @if (User.IsInRole(SD.Admin))
+                    {
+                        <label class="form-check-label">
+                            <input type="radio" value="@SD.ManagerUser" name="rdUserRole" />@SD.ManagerUser
+                        </label>
+                    }
                 </div>
             </div>
         }

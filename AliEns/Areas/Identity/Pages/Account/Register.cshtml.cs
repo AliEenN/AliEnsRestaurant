@@ -6,6 +6,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using AliEns.Data;
 using AliEns.Models;
 using AliEns.Utility;
 using Microsoft.AspNetCore.Authentication;
@@ -27,19 +28,22 @@ namespace AliEns.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _db;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _db = db;
         }
 
         [BindProperty]
@@ -111,7 +115,10 @@ namespace AliEns.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-
+                    if (!await _roleManager.RoleExistsAsync(SD.Admin))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.Admin));
+                    }
                     if (!await _roleManager.RoleExistsAsync(SD.ManagerUser))
                     {
                         await _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser));
@@ -133,10 +140,22 @@ namespace AliEns.Areas.Identity.Pages.Account
 
                     if (string.IsNullOrEmpty(role))
                     {
-                        await _userManager.AddToRoleAsync(user, SD.EndCustomerUser);
+                        var admin = _db.UserRoles.FirstOrDefault();
 
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        if (admin == null)
+                        {
+                            await _userManager.AddToRoleAsync(user, SD.Admin);
+
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+                        }
+                        else
+                        {
+                            await _userManager.AddToRoleAsync(user, SD.EndCustomerUser);
+
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+                        }
                     }
                     else
                     {

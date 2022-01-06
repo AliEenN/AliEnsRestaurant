@@ -115,47 +115,14 @@ namespace AliEns.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    if (!await _roleManager.RoleExistsAsync(SD.Admin))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.Admin));
-                    }
-                    if (!await _roleManager.RoleExistsAsync(SD.ManagerUser))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser));
-                    }
-                    if (!await _roleManager.RoleExistsAsync(SD.KitchenUser))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.KitchenUser));
-                    }
-                    if (!await _roleManager.RoleExistsAsync(SD.FrontDeskUser))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser));
-                    }
-                    if (!await _roleManager.RoleExistsAsync(SD.EndCustomerUser))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.EndCustomerUser));
-                    }
-
                     string role = HttpContext.Request.Form["rdUserRole"].ToString();
 
                     if (string.IsNullOrEmpty(role))
                     {
-                        var admin = _db.UserRoles.FirstOrDefault();
+                        await _userManager.AddToRoleAsync(user, SD.EndCustomerUser);
 
-                        if (admin == null)
-                        {
-                            await _userManager.AddToRoleAsync(user, SD.Admin);
-
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
-                        }
-                        else
-                        {
-                            await _userManager.AddToRoleAsync(user, SD.EndCustomerUser);
-
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
-                        }
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
                     }
                     else
                     {

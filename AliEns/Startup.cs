@@ -1,4 +1,5 @@
 using AliEns.Data;
+using AliEns.Models;
 using AliEns.Services;
 using AliEns.Utility;
 using Microsoft.AspNetCore.Builder;
@@ -51,6 +52,8 @@ namespace AliEns
 
             services.AddSingleton<IEmailSender, EmailSender>();
 
+            services.AddTransient<SeedingData>();
+
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions() {
                 ProgressBar = true,
                 PositionClass = ToastPositions.TopRight,
@@ -80,7 +83,7 @@ namespace AliEns
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedingData seeder)
         {
             if (env.IsDevelopment())
             {
@@ -102,6 +105,8 @@ namespace AliEns
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            seeder.SeedAdminUser();
 
             app.UseSession();
 
